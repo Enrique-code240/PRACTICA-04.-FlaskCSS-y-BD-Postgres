@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión - Taller Mecánico</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Gestión del Taller</h1>
+        <p>Selecciona una opción para continuar:</p>
+        <div class="nav-links">
+            <a href="{{ url_for('registrar') }}" class="btn">Registrar Nuevo Cliente</a>
+            <a href="{{ url_for('mostrar_clientes') }}" class="btn">Ver Lista de Clientes</a>
+        </div>
+    </div>
+</body>
+</html>

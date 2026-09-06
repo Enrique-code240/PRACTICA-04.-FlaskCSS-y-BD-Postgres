@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Clientes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Clientes Registrados</h2>
+        {% if clientes %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido Paterno</th>
+                    <th>Apellido Materno</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Fecha Registro</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliente in clientes %}
+                <tr>
+                    <td>{{ cliente[0] }}</td>
+                    <td>{{ cliente[1] }}</td>
+                    <td>{{ cliente[2] }}</td>
+                    <td>{{ cliente[3] or '' }}</td>
+                    <td>{{ cliente[4] }}</td>
+                    <td>{{ cliente[5] or '' }}</td>
+                    <td>{{ cliente[6] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay clientes registrados actualmente.</p>
+        {% endif %}
+        <br>
+        <a href="{{ url_for('index') }}" class="btn">Volver al inicio</a>
+        <a href="{{ url_for('registrar') }}" class="btn">Registrar otro cliente</a>
+    </div>
+</body>
+</html>
