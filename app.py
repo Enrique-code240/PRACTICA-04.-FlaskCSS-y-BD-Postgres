@@ -1,31 +1,60 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for
-from CPostgreSQL import f_agregar_cliente, f_listar_clientes
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
-app = Flask(__name__)
+# Carga segura de entorno
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
-@app.route("/")
-def index():
-    return render_template("index.html")
+def f_conectar():
+    return psycopg2.connect(
+        host=(os.environ.get("DB_HOST") or "").strip(),
+        port=int((os.environ.get("DB_PORT") or "14117").strip()),
+        database=(os.environ.get("DB_NAME") or "taller").strip(),
+        user=(os.environ.get("DB_USER") or "avnadmin").strip(),
+        password=(os.environ.get("DB_PASSWORD") or "").strip(),
+        sslmode=(os.environ.get("DB_SSLMODE") or "require").strip()
+    )
 
-@app.route("/registro", methods=["GET", "POST"])
-def registrar():
-    if request.method == "POST":
-        nombre = request.form.get("nombre")
-        ap_paterno = request.form.get("apellido_paterno")
-        ap_materno = request.form.get("apellido_materno")
-        correo = request.form.get("correo")
-        telefono = request.form.get("telefono")
-        
-        f_agregar_cliente(nombre, ap_paterno, ap_materno, correo, telefono)
-        return redirect(url_for("mostrar_clientes"))
-    return render_template("registro.html")
+def f_agregar_cliente(nombre, ap_paterno, ap_materno, correo, telefono):
+    conexion = None
+    try:
+        conexion = f_conectar()
+        cursor = conexion.cursor()
+        sql = """
+            INSERT INTO clientes (nombre, apellido_paterno, apellido_materno, correo, telefono)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        cursor.execute(sql, (nombre, ap_paterno, ap_materno, correo, telefono))
+        conexion.commit()
+        cursor.close()
+        return True
+    except Exception as e:
+        print(f"Error al agregar cliente: {e}")
+        if conexion:
+            conexion.rollback()
+        return False
+    finally:
+        if conexion:
+            conexion.close()
 
-@app.route("/mostrar_clientes")
-def mostrar_clientes():
-    clientes = f_listar_clientes()
-    return render_template("mostrar_clientes.html", clientes=clientes)
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+def f_listar_clientes():
+    conexion = None
+    registros = []
+    try:
+        conexion = f_conectar()
+        # RealDictCursor permite acceder a los datos en HTML como cliente.nombre o cliente['nombre']
+        cursor = conexion.cursor(cursor_factory=RealDictCursor)
+        sql = "SELECT id_cliente, nombre, apellido_paterno, apellido_materno, correo, telefono, fecha_registro FROM clientes ORDER BY id_cliente DESC"
+        cursor.execute(sql)
+        registros = cursor.fetchall()
+        cursor.close()
+    except Exception as e:
+        print(f"Error al listar clientes: {e}")
+    finally:
+        if conexion:
+            conexion.close()
+    return registros
