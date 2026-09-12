@@ -6,12 +6,12 @@ load_dotenv()
 
 def f_conectar():
     return psycopg2.connect(
-        host=os.environ.get("DB_HOST", "localhost").strip(),
-        port=os.environ.get("DB_PORT", "5432").strip(),
-        database=os.environ.get("DB_NAME", "taller").strip(),
-        user=os.environ.get("DB_USER", "postgres").strip(),
-        password=os.environ.get("DB_PASSWORD", "").strip(),
-        sslmode=os.environ.get("DB_SSLMODE", "prefer").strip()
+        host=(os.environ.get("DB_HOST") or "").strip(),
+        port=int((os.environ.get("DB_PORT") or "14117").strip()),
+        database=(os.environ.get("DB_NAME") or "taller").strip(),
+        user=(os.environ.get("DB_USER") or "avnadmin").strip(),
+        password=(os.environ.get("DB_PASSWORD") or "").strip(),
+        sslmode=(os.environ.get("DB_SSLMODE") or "require").strip()
     )
 
 def f_agregar_cliente(nombre, ap_paterno, ap_materno, correo, telefono):
