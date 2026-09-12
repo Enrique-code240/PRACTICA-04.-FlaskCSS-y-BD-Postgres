@@ -3,45 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Clientes</title>
+    <title>Clientes Registrados</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h2>Clientes Registrados</h2>
-        {% if clientes %}
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Apellido Paterno</th>
-                    <th>Apellido Materno</th>
-                    <th>Correo</th>
-                    <th>Teléfono</th>
-                    <th>Fecha Registro</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cliente in clientes %}
-                <tr>
-                    <td>{{ cliente[0] }}</td>
-                    <td>{{ cliente[1] }}</td>
-                    <td>{{ cliente[2] }}</td>
-                    <td>{{ cliente[3] or '' }}</td>
-                    <td>{{ cliente[4] }}</td>
-                    <td>{{ cliente[5] or '' }}</td>
-                    <td>{{ cliente[6] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="container" style="max-width: 900px; margin: 40px auto; padding: 20px;">
+        <h2 style="text-align: center; margin-bottom: 20px;">Clientes Registrados</h2>
+
+        {% if clientes and clientes|length > 0 %}
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                <thead>
+                    <tr style="background-color: #2c3e50; color: white;">
+                        <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">Nombre</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">Apellido Paterno</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">Apellido Materno</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">Correo</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">Teléfono</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">Fecha Registro</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in clientes %}
+                    <tr style="text-align: center;">
+                        <td style="padding: 8px; border: 1px solid #ddd;">{{ c.id_cliente }}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">{{ c.nombre }}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">{{ c.apellido_paterno }}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">{{ c.apellido_materno }}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">{{ c.correo }}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">{{ c.telefono }}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">{{ c.fecha_registro }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         {% else %}
-        <p>No hay clientes registrados actualmente.</p>
+            <p style="text-align: center; color: #666;">No hay clientes registrados actualmente.</p>
         {% endif %}
-        <br>
-        <a href="{{ url_for('index') }}" class="btn">Volver al inicio</a>
-        <a href="{{ url_for('registrar') }}" class="btn">Registrar otro cliente</a>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/" class="btn" style="padding: 10px 15px; background: #3498db; color: white; text-decoration: none; border-radius: 4px; margin-right: 10px;">Volver al inicio</a>
+            <a href="/registro" class="btn" style="padding: 10px 15px; background: #2ecc71; color: white; text-decoration: none; border-radius: 4px;">Registrar otro cliente</a>
+        </div>
     </div>
 </body>
 </html>
